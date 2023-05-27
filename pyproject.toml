@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "archivos-bulk-converter"
+version = "0.1.0"
+description = ""
+authors = ["Lars Jacob <jacob.lars@gmail.com>"]
+readme = "README.md"
+packages = [{include = "archivos_bulk_converter"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+tqdm = "^4.65.0"
+pillow = "^9.5.0"
+img2pdf = "^0.4.4"
+
+[tool.poetry.scripts]
+start = "archivos_bulk_converter.bulk:start"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
