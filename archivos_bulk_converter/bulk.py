@@ -3,7 +3,10 @@ import click
 
 from tqdm import tqdm
 
-from services import tif_to_pdf
+from services import (
+    tif_to_pdf,
+    ocr
+)
 
 import concurrent.futures
 
@@ -20,9 +23,13 @@ def cli(input: str, output: str, watermark:str, workers: int):
     pbar = tqdm(total=len(tif_queue))
     # Create a ProcessPoolExecutor
     with concurrent.futures.ProcessPoolExecutor(max_workers=workers) as executor:
-        for pdf in executor.map(tif_to_pdf.in_memory, [x[0] for x in tif_queue], [x[1] for x in tif_queue], [watermark]*len(tif_queue)):
+        for pdf in executor.map(process, [x[0] for x in tif_queue], [x[1] for x in tif_queue], [watermark]*len(tif_queue)):
             pbar.update(n=1)
 
+def process(input_dir, output_dir, watermark):
+    pdf = tif_to_pdf.in_memory(input_dir, output_dir, watermark)
+    ocr.from_tif(input_dir, output_dir)
+    return pdf
 
 def getQueue(input_dir, output_dir):
     tif_queue = []

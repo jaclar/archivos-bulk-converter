@@ -300,6 +300,22 @@ docs = ["furo", "olefile", "sphinx (>=2.4)", "sphinx-copybutton", "sphinx-inline
 tests = ["check-manifest", "coverage", "defusedxml", "markdown2", "olefile", "packaging", "pyroma", "pytest", "pytest-cov", "pytest-timeout"]
 
 [[package]]
+name = "pytesseract"
+version = "0.3.10"
+description = "Python-tesseract is a python wrapper for Google's Tesseract-OCR"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "pytesseract-0.3.10-py3-none-any.whl", hash = "sha256:8f22cc98f765bf13517ead0c70effedb46c153540d25783e04014f28b55a5fc6"},
+    {file = "pytesseract-0.3.10.tar.gz", hash = "sha256:f1c3a8b0f07fd01a1085d451f5b8315be6eec1d5577a6796d46dc7a62bd4120f"},
+]
+
+[package.dependencies]
+packaging = ">=21.3"
+Pillow = ">=8.0.0"
+
+[[package]]
 name = "tqdm"
 version = "4.65.0"
 description = "Fast, Extensible Progress Meter"
@@ -323,4 +339,4 @@ telegram = ["requests"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "1ada7b04a9fbd68c57938760bf01c134f0a6e979a887b96dfe1e589d33c3aafd"
+content-hash = "49dfed1303fd4251da49835f520633a55b818c4080fdb5e13c2f082bae4ede3e"
