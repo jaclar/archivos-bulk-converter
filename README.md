@@ -16,4 +16,4 @@ Currently this project is heavily scoped for the archive of the
 ## Run
 
 (cli parameters are still TODO)
-`poetry run start // $input_folder $output_folder`
+`poetry run start -i $input_dir -o $output_dir``
