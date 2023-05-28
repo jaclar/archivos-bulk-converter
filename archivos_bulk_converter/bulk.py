@@ -43,10 +43,10 @@ def getQueue(input_dir, output_dir):
         if (has_tif and len(x[1]) > 0):
             print(dir, "has at least one tif and subfolders - skipping")
         elif (has_tif):
-            tif_queue.append((dir, os.path.dirname(output_dir)))
+            tif_queue.append((dir, os.path.dirname(out_dir)))
         else:
             try: # create output folder
-                os.mkdir(output_dir)
+                os.mkdir(out_dir)
             except FileExistsError:
                 pass # ignore error if directory exists already
 
