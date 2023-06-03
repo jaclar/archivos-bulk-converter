@@ -53,7 +53,7 @@ def in_memory(input_dir, output_dir, watermark_path, max_workers=4):
             jpeg_image.seek(0)
             imgs.append(jpeg_image.read())
         f.write(img2pdf.convert(*imgs))
-    return pdf_file_name
+    return len(jpeg_images)
 
 def sh_script(input_dir, output_dir, watermark):
     script_path = "./tif_to_pdf.sh"

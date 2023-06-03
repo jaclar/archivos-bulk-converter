@@ -17,19 +17,33 @@ max_workers = 4
 @click.option("--output", "-o", type=str, required=True, help="Output directory, will be created if not present.")
 @click.option("--watermark", "-w", default="./watermark.png", type=str, required=False, help="Path to watermark *.png file")
 @click.option("--workers", default=4, type=int, required=False, help="Maximum amount of parallel workers")
-def cli(input: str, output: str, watermark:str, workers: int):
+@click.option("--pdf/--no-pdf", default=True, required=False, help="Toggle PDF generation")
+@click.option("--ocr/--no-ocr", default=False, required=False, help="Toggles text recognition via OCR")
+def cli(input: str, output: str, watermark:str, workers: int, pdf: bool, ocr: bool):
     tif_queue = getQueue(input, output)
 
+    total_pages = 0
     pbar = tqdm(total=len(tif_queue))
     # Create a ProcessPoolExecutor
     with concurrent.futures.ProcessPoolExecutor(max_workers=workers) as executor:
-        for pdf in executor.map(process, [x[0] for x in tif_queue], [x[1] for x in tif_queue], [watermark]*len(tif_queue)):
+        for pages in executor.map(process,
+                                  [x[0] for x in tif_queue],
+                                  [x[1] for x in tif_queue],
+                                  [watermark]*len(tif_queue),
+                                  [pdf]*len(tif_queue),
+                                  [ocr]*len(tif_queue)):
             pbar.update(n=1)
+            total_pages += pages
+    pbar.close();
+    print("Processed", total_pages, "pages from", len(tif_queue), "documents")
 
-def process(input_dir, output_dir, watermark):
-    pdf = tif_to_pdf.in_memory(input_dir, output_dir, watermark)
-    ocr.from_tif(input_dir, output_dir)
-    return pdf
+def process(input_dir: str, output_dir: str, watermark: str, enable_pdf: bool, enable_ocr: bool):
+    pages = 0
+    if enable_pdf:
+        pages = tif_to_pdf.in_memory(input_dir, output_dir, watermark)
+    if enable_ocr:
+        pages = ocr.from_tif(input_dir, output_dir)
+    return pages
 
 def getQueue(input_dir, output_dir):
     tif_queue = []
