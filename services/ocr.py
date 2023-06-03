@@ -8,6 +8,9 @@ def from_tif(input_dir, output_dir):
     txt_file_name = os.path.basename(input_dir) + ".txt"
     txt_path = os.path.join(output_dir, txt_file_name)
 
+    if os.path.isfile(txt_path): # skip OCR if output file exists already
+        return 0
+
     # Get a list of all .tif files in the input directory
     filenames = [filename for filename in sorted(os.listdir(input_dir)) if filename.endswith('.tif')]
 

@@ -34,6 +34,10 @@ def in_memory(input_dir, output_dir, watermark_path, max_workers=4):
 
     pdf_file_name = os.path.basename(input_dir) + ".pdf"
     pdf_path = os.path.join(output_dir, pdf_file_name)
+
+    if os.path.isfile(pdf_path): # skip pdf creation if output file exists already
+        return 0
+
     # List to store the .jpeg images
     jpeg_images = []
 
