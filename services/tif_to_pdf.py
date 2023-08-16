@@ -50,13 +50,20 @@ def in_memory(input_dir, output_dir, watermark_path, max_workers=4):
         for jpeg_image in executor.map(process_image, filenames, [input_dir]*len(filenames), [watermark]*len(filenames)):
             jpeg_images.append(jpeg_image)
 
-    # Convert all .jpeg images to a single .pdf file
-    with open(pdf_path, 'wb') as f:
-        imgs = []
-        for jpeg_image in jpeg_images:
-            jpeg_image.seek(0)
-            imgs.append(jpeg_image.read())
-        f.write(img2pdf.convert(*imgs))
+    try:
+        # Convert all .jpeg images to a single .pdf file
+        with open(pdf_path, 'wb') as f:
+            imgs = []
+            for jpeg_image in jpeg_images:
+                jpeg_image.seek(0)
+                imgs.append(jpeg_image.read())
+            f.write(img2pdf.convert(*imgs))
+    except Exception as e:
+        # delete pdf in case of an issue
+        if os.path.exists(pdf_path):
+            os.remove(pdf_path)
+        raise e
+
     return len(jpeg_images)
 
 def sh_script(input_dir, output_dir, watermark):
