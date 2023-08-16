@@ -38,11 +38,13 @@ def cli(input: str, output: str, watermark:str, workers: int, pdf: bool, ocr: bo
     print("Processed", total_pages, "pages from", len(tif_queue), "documents")
 
 def process(input_dir: str, output_dir: str, watermark: str, enable_pdf: bool, enable_ocr: bool):
-    pages = 0
+
     if enable_pdf:
         pages = tif_to_pdf.in_memory(input_dir, output_dir, watermark)
     if enable_ocr:
-        pages = ocr.from_tif(input_dir, output_dir)
+        pages, conf = ocr.from_tif(input_dir, output_dir)
+        with open('./scores.txt', "a") as txt:
+            txt.write(str(conf) + " " + input_dir + "\n")
     return pages
 
 def getQueue(input_dir, output_dir):
