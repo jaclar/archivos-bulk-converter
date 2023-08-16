@@ -56,11 +56,18 @@ def from_tif(input_dir, output_dir):
 
     i = 1
     confidence = []
-    with open(txt_path, "w") as txt:
-        for filename in filenames:
-            txt.write("Page " + str(i) + ":\n\n")
-            text, conf = ocr_with_score(Image.open(os.path.join(input_dir, filename)))
-            txt.write(text)
-            confidence.append(conf)
-            i += 1
+    try:
+        with open(txt_path, "w") as txt:
+            for filename in filenames:
+                txt.write("Page " + str(i) + ":\n\n")
+                text, conf = ocr_with_score(Image.open(os.path.join(input_dir, filename)))
+                txt.write(text)
+                confidence.append(conf)
+                i += 1
+    except Exception as e:
+        # delete txt in case of an issue
+        if os.path.exists(txt_path):
+            os.remove(txt_path)
+        raise e
+
     return len(filenames), statistics.fmean(confidence)
