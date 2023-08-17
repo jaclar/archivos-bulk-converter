@@ -57,12 +57,16 @@ def getQueue(input_dir, output_dir):
         files = x[2]
         out_dir = dir.replace(input_dir, output_dir)
 
-        if (os.path.basename(dir).startswith('.') or os.path.basename(dir).startswith('@')):
+        if (os.path.basename(dir).startswith('.') or
+            os.path.basename(dir).startswith('@') or
+            os.path.basename(dir).endswith(' CD')):
             # ignore hidden folders
             continue
 
         has_tif = any(".tif" in s for s in files)
-        has_subfolder = any(not (d.startswith('.') or d.startswith('@')) for d in x[1])
+        has_subfolder = any(not (d.startswith('.') or
+                                 d.startswith('@') or
+                                 d.endswith(' CD')) for d in x[1])
 
         if (has_tif and has_subfolder):
             print(dir, "has at least one tif and non-hidden subfolders - skipping")
