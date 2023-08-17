@@ -57,7 +57,7 @@ def getQueue(input_dir, output_dir):
         files = x[2]
         out_dir = dir.replace(input_dir, output_dir)
 
-        if (os.path.basename(dir[0]) == '.'):
+        if (os.path.basename(dir).startswith('.')):
             print(dir, 'is a hidden folder - skipped')
             continue
 
