@@ -57,14 +57,15 @@ def getQueue(input_dir, output_dir):
         files = x[2]
         out_dir = dir.replace(input_dir, output_dir)
 
-        if (dir[0] == '.'):
+        if (os.path.basename(dir[0]) == '.'):
             print(dir, 'is a hidden folder - skipped')
             continue
 
         has_tif = any(".tif" in s for s in files)
+        has_subfolder = any(not d.startswith('.') for d in x[1])
 
-        if (has_tif and len(x[1]) > 0):
-            print(dir, "has at least one tif and subfolders - skipping")
+        if (has_tif and has_subfolder):
+            print(dir, "has at least one tif and non-hidden subfolders - skipping")
         elif (has_tif):
             tif_queue.append((dir, os.path.dirname(out_dir)))
         else:
