@@ -58,7 +58,7 @@ def getQueue(input_dir, output_dir):
         out_dir = dir.replace(input_dir, output_dir)
 
         if (os.path.basename(dir).startswith('.')):
-            print(dir, 'is a hidden folder - skipped')
+            # ignore hidden folders
             continue
 
         has_tif = any(".tif" in s for s in files)
