@@ -60,7 +60,7 @@ def getQueue(input_dir, output_dir):
         if (os.path.basename(dir).startswith('.') or
             os.path.basename(dir).startswith('@') or
             os.path.basename(dir).endswith(' CD') or
-            os.path.basename(dir).endswith(' TS')):
+            os.path.basename(dir).endswith('_TS')):
             # ignore hidden folders
             continue
 
