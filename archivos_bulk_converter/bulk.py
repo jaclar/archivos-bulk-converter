@@ -57,8 +57,8 @@ def getQueue(input_dir, output_dir):
         files = x[2]
         out_dir = dir.replace(input_dir, output_dir)
 
-        if (os.path.basename(dir).startswith('.') or
-            os.path.basename(dir).startswith('@')):
+        if (dir.find('/.') != -1 or
+            dir.find('/@') != -1):
             # ignore hidden folders
             continue
 
