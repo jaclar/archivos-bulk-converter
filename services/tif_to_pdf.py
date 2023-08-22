@@ -47,8 +47,16 @@ def in_memory(input_dir, output_dir, watermark_path, max_workers=4):
     # Create a ProcessPoolExecutor
     with concurrent.futures.ProcessPoolExecutor(max_workers=max_workers) as executor:
         # Use the executor to map the process_image function to the filenames
-        for jpeg_image in executor.map(process_image, filenames, [input_dir]*len(filenames), [watermark]*len(filenames)):
-            jpeg_images.append(jpeg_image)
+        futures = executor.map(process_image, filenames, [input_dir]*len(filenames), [watermark]*len(filenames))
+
+        for future in futures:
+            try:
+                jpeg_image = future
+                jpeg_images.append(jpeg_image)
+            except Exception as e:
+                # Log excpetion and skip pdf creation
+                print(f"An error occurred transforming the tif file {pdf_file_name}: {e}")
+                return 0
 
     try:
         # Convert all .jpeg images to a single .pdf file
