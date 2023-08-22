@@ -70,7 +70,9 @@ def in_memory(input_dir, output_dir, watermark_path, max_workers=4):
         # delete pdf in case of an issue
         if os.path.exists(pdf_path):
             os.remove(pdf_path)
-        raise e
+        # Log excpetion and skip pdf creation
+        print(f"An error occurred writing the pdf {pdf_file_name}: {e}")
+        return 0
 
     return len(jpeg_images)
 
