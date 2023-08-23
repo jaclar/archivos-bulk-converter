@@ -6,8 +6,6 @@ import io
 import subprocess
 import concurrent.futures
 
-import sys
-
 def process_image(filename, input_dir, watermark):
     try:
         # Open the .tif image
@@ -31,7 +29,7 @@ def process_image(filename, input_dir, watermark):
 
         return jpeg_image
     except Exception as e:
-        print(f"An error occurred converting the tif file {filename}: {e}", file=sys.stderr)
+        print(f"An error occurred converting the tif file {filename}: {e}")
         return None
 
 def in_memory(input_dir, output_dir, watermark_path, max_workers=4):
@@ -57,7 +55,7 @@ def in_memory(input_dir, output_dir, watermark_path, max_workers=4):
             if jpeg_image != None:
                 jpeg_images.append(jpeg_image)
             else:
-                print(f"Couldn't create PDF: {pdf_path}", file=sys.stderr)
+                print(f"Couldn't create PDF: {pdf_path}")
                 return 0
 
     try:
@@ -73,7 +71,7 @@ def in_memory(input_dir, output_dir, watermark_path, max_workers=4):
         if os.path.exists(pdf_path):
             os.remove(pdf_path)
         # Log excpetion and skip pdf creation
-        print(f"An error occurred writing the pdf {pdf_file_name}: {e}", file=sys.stderr)
+        print(f"An error occurred writing the pdf {pdf_file_name}: {e}")
         return 0
 
     return len(jpeg_images)
