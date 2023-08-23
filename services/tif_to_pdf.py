@@ -6,27 +6,33 @@ import io
 import subprocess
 import concurrent.futures
 
+import sys
+
 def process_image(filename, input_dir, watermark):
-    # Open the .tif image
-    img = Image.open(os.path.join(input_dir, filename))
+    try:
+        # Open the .tif image
+        img = Image.open(os.path.join(input_dir, filename))
 
-    # Convert the image to RGB (necessary for .jpeg format)
-    img = img.convert('RGB')
+        # Convert the image to RGB (necessary for .jpeg format)
+        img = img.convert('RGB')
 
-    # Calculate the position to center the watermark
-    position = ((img.width - watermark.width) // 2, (img.height - watermark.height) // 2)
+        # Calculate the position to center the watermark
+        position = ((img.width - watermark.width) // 2, (img.height - watermark.height) // 2)
 
-    # Add the watermark
-    img.paste(watermark, position, watermark)
+        # Add the watermark
+        img.paste(watermark, position, watermark)
 
-    # Save the image as .jpeg to a BytesIO object with 30% quality
-    jpeg_image = io.BytesIO()
-    img.save(jpeg_image, format='JPEG', quality=30)
+        # Save the image as .jpeg to a BytesIO object with 30% quality
+        jpeg_image = io.BytesIO()
+        img.save(jpeg_image, format='JPEG', quality=30)
 
-    # Reset the file pointer to the beginning of the stream
-    jpeg_image.seek(0)
+        # Reset the file pointer to the beginning of the stream
+        jpeg_image.seek(0)
 
-    return jpeg_image
+        return jpeg_image
+    except Exception as e:
+        print(f"An error occurred converting the tif file {filename}: {e}", file=sys.stderr)
+        return None
 
 def in_memory(input_dir, output_dir, watermark_path, max_workers=4):
     # Load the watermark image
@@ -48,7 +54,11 @@ def in_memory(input_dir, output_dir, watermark_path, max_workers=4):
     with concurrent.futures.ProcessPoolExecutor(max_workers=max_workers) as executor:
         # Use the executor to map the process_image function to the filenames
         for jpeg_image in executor.map(process_image, filenames, [input_dir]*len(filenames), [watermark]*len(filenames)):
-            jpeg_images.append(jpeg_image)
+            if jpeg_image != None:
+                jpeg_images.append(jpeg_image)
+            else:
+                print(f"Couldn't create PDF: {pdf_path}", file=sys.stderr)
+                return 0
 
     try:
         # Convert all .jpeg images to a single .pdf file
@@ -63,7 +73,7 @@ def in_memory(input_dir, output_dir, watermark_path, max_workers=4):
         if os.path.exists(pdf_path):
             os.remove(pdf_path)
         # Log excpetion and skip pdf creation
-        print(f"An error occurred writing the pdf {pdf_file_name}: {e}")
+        print(f"An error occurred writing the pdf {pdf_file_name}: {e}", file=sys.stderr)
         return 0
 
     return len(jpeg_images)
